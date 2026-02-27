@@ -1,0 +1,13 @@
+from DataClasses import Tarea
+from sqlite3 import Connection
+
+class RepositorioPersona:
+
+    def __init__(self, conexion: Connection):
+        self.conn = conexion
+    
+    def CrearPersona(self, nombre) -> int:
+        cursor = self.conn.cursor()
+        cursor.execute(f''' 
+            INSERT INTO Persona (nombre) VALUES ('{nombre}') RETURNING id
+        ''')
