@@ -35,5 +35,6 @@ def init_db():
                 FOREIGN KEY (idPersona) REFERENCES Persona(id) 
             )
         ''')
+
 def getConnection():
     return sqlite3.connect(DB_NAME)

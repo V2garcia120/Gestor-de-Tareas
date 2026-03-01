@@ -1,4 +1,4 @@
-from DataClasses import Tarea
+from schemas.DataClasses import Tarea
 from sqlite3 import Connection
 
 class RepositorioUsuarioTarea:

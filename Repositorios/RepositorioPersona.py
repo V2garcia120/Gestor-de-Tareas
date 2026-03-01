@@ -1,4 +1,4 @@
-from DataClasses import Tarea
+from schemas.DataClasses import Tarea
 from sqlite3 import Connection
 
 class RepositorioPersona:
@@ -17,6 +17,9 @@ class RepositorioPersona:
         self.conn.commit()
         return cursor.lastrowid
     
+    def ActualizarPersona(self):
+        pass
+    
     def BuscarPersona(self, nombre) -> int:
         cursor = self.conn.cursor()
         cursor.execute(
@@ -29,3 +32,4 @@ class RepositorioPersona:
 
     def EliminarPersona(self):
         pass
+    

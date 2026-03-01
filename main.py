@@ -1,9 +1,9 @@
-from datos import  init_db
-from DataClasses import Tarea
+from DB.datos import  init_db
+from schemas.DataClasses import Tarea
 from Repositorios.RepositorioTareas import RepositorioTareas
 from Repositorios.RepositorioUsuarioTarea import RepositorioUsuarioTarea
 from Repositorios.RepositorioPersona import RepositorioPersona
-from datos import getConnection
+from DB.datos import getConnection
 
 
 
