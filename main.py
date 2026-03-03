@@ -1,36 +1,27 @@
-from DB.datos import  init_db
-from schemas.DataClasses import Tarea
-from Repositorios.RepositorioTareas import RepositorioTareas
-from Repositorios.RepositorioUsuarioTarea import RepositorioUsuarioTarea
-from Repositorios.RepositorioPersona import RepositorioPersona
-from DB.datos import getConnection
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+
+from DB.datos import init_db
+from rutas.asignaciones import router as asignaciones_router
+from rutas.personas import router as personas_router
+from rutas.tareas import router as tareas_router
 
 
-
-if __name__ == '__main__':
-
+@asynccontextmanager
+async def lifespan(_: FastAPI):
     init_db()
+    yield
 
-    conection = getConnection()
-    _repositorioTarea = RepositorioTareas(conection)
-    _repositorioUsuarioTarea = RepositorioUsuarioTarea(conection)
-    _repositorioPersona = RepositorioPersona(conection)
 
-    tarea1 = Tarea(
-        nombre="Prestar Atencion",
-        urgencia="Inmediata",
-        descripcion="clase de Desarrollo 3"
+app = FastAPI(title="Aburri2 API", lifespan=lifespan)
 
-        )
-    nombre = 'vimsil'
 
-    idtarea = _repositorioTarea.CrearTarea(tarea1)
-    idPersona = _repositorioPersona.CrearPersona(nombre)
-    personasIds = [idPersona]
-    _repositorioUsuarioTarea.Asociar_Tareas_Usuarios(idtarea, personasIds)
+@app.get("/")
+def health_check():
+    return {"status": "ok"}
 
-    buscartarea = _repositorioTarea.ObtenerTareas(idPersona)
-    
-    conection.commit()
 
-    print(buscartarea)
+app.include_router(personas_router)
+app.include_router(tareas_router)
+app.include_router(asignaciones_router)
