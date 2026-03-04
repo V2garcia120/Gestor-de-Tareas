@@ -1,12 +1,12 @@
-from schemas.DataClasses import Tarea
 from sqlite3 import Connection
+
 
 class RepositorioPersona:
 
     def __init__(self, conexion: Connection):
         self.conn = conexion
     
-    def CrearPersona(self, nombre: str):
+    def crear_persona(self, nombre: str) -> int:
         cursor = self.conn.cursor()
         cursor.execute(
             '''
@@ -17,19 +17,16 @@ class RepositorioPersona:
         self.conn.commit()
         return cursor.lastrowid
     
-    def ActualizarPersona(self):
-        pass
-    
-    def BuscarPersona(self, nombre) -> int:
+    def buscar_persona_por_nombre(self, nombre: str) -> dict | None:
         cursor = self.conn.cursor()
         cursor.execute(
             '''
-            SELECT id FROM Persona WHERE nombre = ?
+            SELECT id, nombre FROM Persona WHERE nombre = ?
             ''',
             (nombre,)
         )
-        return cursor.fetchone()
-
-    def EliminarPersona(self):
-        pass
+        fila = cursor.fetchone()
+        if fila is None:
+            return None
+        return {"id": fila[0], "nombre": fila[1]}
     

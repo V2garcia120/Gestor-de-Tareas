@@ -1,28 +1,18 @@
 from fastapi import APIRouter
 
-from DB.datos import getConnection
-from Repositorios.RepositorioPersona import RepositorioPersona
+from Servicios.Personas.ServicioPersonas import ServicioPersonas
 from schemas.Persona_Schema import Crear_Persona
+from schemas.Response_Schema import PersonaBusquedaResponse, PersonaResponse
 
 router = APIRouter(prefix="/personas", tags=["Personas"])
+servicio_personas = ServicioPersonas()
 
 
-@router.post("/")
+@router.post("/", response_model=PersonaResponse)
 def crear_persona(payload: Crear_Persona):
-    with getConnection() as connection:
-        repositorio_persona = RepositorioPersona(connection)
-        persona_id = repositorio_persona.CrearPersona(payload.nombre)
-
-    return {"id": persona_id, "nombre": payload.nombre}
+    return servicio_personas.crear_persona(payload)
 
 
-@router.get("/{nombre}")
+@router.get("/{nombre}", response_model=PersonaBusquedaResponse)
 def buscar_persona(nombre: str):
-    with getConnection() as connection:
-        repositorio_persona = RepositorioPersona(connection)
-        persona = repositorio_persona.BuscarPersona(nombre)
-
-    if persona is None:
-        return {"encontrada": False, "id": None}
-
-    return {"encontrada": True, "id": persona[0], "nombre": nombre}
+    return servicio_personas.buscar_persona(nombre)

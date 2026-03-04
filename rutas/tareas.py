@@ -1,32 +1,18 @@
 from fastapi import APIRouter
 
-from DB.datos import getConnection
-from Repositorios.RepositorioTareas import RepositorioTareas
-from schemas.DataClasses import Tarea
+from Servicios.Tareas.ServicioTareas import ServicioTareas
+from schemas.Response_Schema import TareaCreadaResponse, TareasDePersonaResponse
 from schemas.Tarea_Schema import Crear_Tarea
 
 router = APIRouter(prefix="/tareas", tags=["Tareas"])
+servicio_tareas = ServicioTareas()
 
 
-@router.post("/")
+@router.post("/", response_model=TareaCreadaResponse)
 def crear_tarea(payload: Crear_Tarea):
-    tarea = Tarea(
-        nombre=payload.nombre,
-        urgencia=payload.urgencia,
-        descripcion=payload.descripcion,
-    )
-
-    with getConnection() as connection:
-        repositorio_tareas = RepositorioTareas(connection)
-        tarea_id = repositorio_tareas.CrearTarea(tarea)
-
-    return {"id": tarea_id, "nombre": payload.nombre}
+    return servicio_tareas.crear_tarea(payload)
 
 
-@router.get("/persona/{persona_id}")
+@router.get("/persona/{persona_id}", response_model=TareasDePersonaResponse)
 def obtener_tareas_de_persona(persona_id: int):
-    with getConnection() as connection:
-        repositorio_tareas = RepositorioTareas(connection)
-        tareas = repositorio_tareas.ObtenerTareas(persona_id)
-
-    return {"persona_id": persona_id, "tareas": tareas}
+    return servicio_tareas.obtener_tareas_de_persona(persona_id)

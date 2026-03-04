@@ -1,45 +1,43 @@
-from schemas.DataClasses import Tarea
 from sqlite3 import Connection
+
+from schemas.DataClasses import Tarea
+
+
 class RepositorioTareas:
-
-
     def __init__(self, conexion: Connection):
         self.conn = conexion
-        pass
 
-    def ObtenerTareas(self, idPErsona) -> Tarea:
+    def obtener_tareas_de_persona(self, id_persona: int) -> list[dict]:
         cursor = self.conn.cursor()
         cursor.execute(
             '''
-            SELECT t.id, t.nombre, t.urgencia, t.descripccion, t.completada
+            SELECT t.id, t.nombre, t.urgencia, t.descripcion, t.completada
             FROM Tarea t
             INNER JOIN AsignacionTarea a ON a.idTarea = t.id
             WHERE a.idPersona = ?
             ''',
-            (idPErsona,)
+            (id_persona,),
         )
-        return cursor.fetchall()
+        filas = cursor.fetchall()
+        return [
+            {
+                "id": fila[0],
+                "nombre": fila[1],
+                "urgencia": fila[2],
+                "descripcion": fila[3],
+                "completada": fila[4],
+            }
+            for fila in filas
+        ]
 
-    def TotalTareas():
-        pass
-
-    def CrearTarea(self, tarea: Tarea) -> int:
+    def crear_tarea(self, tarea: Tarea) -> int:
         cursor = self.conn.cursor()
         cursor.execute(
             '''
-            INSERT INTO Tarea (nombre, urgencia, descripccion) VALUES (?, ?, ?)
+            INSERT INTO Tarea (nombre, urgencia, descripcion) VALUES (?, ?, ?)
             ''',
-            (tarea.nombre, tarea.urgencia, tarea.descripcion)
+            (tarea.nombre, tarea.urgencia, tarea.descripcion),
         )
         self.conn.commit()
         return cursor.lastrowid
-
-
-    def EliminarTarea():
-        pass
-
-    def CompletarTarea():
-        pass
-    
-    pass
 

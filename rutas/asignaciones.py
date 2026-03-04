@@ -1,20 +1,13 @@
 from fastapi import APIRouter
 
-from DB.datos import getConnection
-from Repositorios.RepositorioUsuarioTarea import RepositorioUsuarioTarea
+from Servicios.Asignaciones.ServicioAsignaciones import ServicioAsignaciones
 from schemas.Asignacion_Schema import Asignar_Tarea
+from schemas.Response_Schema import AsignacionResponse
 
 router = APIRouter(prefix="/asignaciones", tags=["Asignaciones"])
+servicio_asignaciones = ServicioAsignaciones()
 
 
-@router.post("/")
+@router.post("/", response_model=AsignacionResponse)
 def asignar_tarea(payload: Asignar_Tarea):
-    with getConnection() as connection:
-        repositorio_usuario_tarea = RepositorioUsuarioTarea(connection)
-        repositorio_usuario_tarea.Asociar_Tareas_Usuarios(payload.tarea_id, payload.persona_ids)
-
-    return {
-        "tarea_id": payload.tarea_id,
-        "persona_ids": payload.persona_ids,
-        "asignadas": True,
-    }
+    return servicio_asignaciones.asignar_tarea(payload)
