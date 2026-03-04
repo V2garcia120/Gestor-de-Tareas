@@ -25,6 +25,11 @@ class TareaCreadaResponse(BaseModel):
     nombre: str
 
 
+class TareaCompletadaResponse(BaseModel):
+    tarea_id: int
+    completada: bool
+
+
 class TareasDePersonaResponse(BaseModel):
     persona_id: int
     tareas: list[TareaResponse]

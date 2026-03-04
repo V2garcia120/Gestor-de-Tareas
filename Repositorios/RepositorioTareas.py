@@ -40,4 +40,14 @@ class RepositorioTareas:
         )
         self.conn.commit()
         return cursor.lastrowid
-
+    
+    def completar_tarea(self, tarea_id: int):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            '''
+            Update Tarea SET completada = 1 WHERE id = ?    
+            ''',
+            (tarea_id,),
+        )
+        self.conn.commit()
+        return cursor.rowcount > 0
